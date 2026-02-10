@@ -1,0 +1,107 @@
+# -------------------------
+# Python / Packaging
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+.ipynb_checkpoints/
+
+# -------------------------
+# Environments
+# -------------------------
+.venv/
+venv/
+env/
+.conda/
+conda/
+poetry.lock
+Pipfile.lock
+
+# -------------------------
+# OS / Editors
+# -------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# -------------------------
+# Logs / Runs / Outputs
+# -------------------------
+logs/
+runs/
+outputs/
+artifacts/
+wandb/
+tensorboard/
+tb_logs/
+mlruns/
+*.log
+*.jsonl
+
+# -------------------------
+# Model checkpoints
+# -------------------------
+checkpoints/
+weights/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.engine
+*.tflite
+
+# -------------------------
+# Datasets (Raw)
+# -------------------------
+data/
+datasets/
+dataset/
+raw_data/
+*_data/
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# -------------------------
+# Generated splits / partitions (보통은 생성물 → ignore 권장)
+# 단, "완전 재현성"을 위해 split/partition을 repo에 포함하고 싶으면
+# 이 섹션은 지우고, 대신 작은 텍스트 파일만 커밋하세요.
+# -------------------------
+splits/generated/
+splits/**/cache/
+client_partitions/
+partitions/
+
+# -------------------------
+# Caches (Image / Torch / Dataloaders)
+# -------------------------
+.cache/
+cache/
+*.cache
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.lmdb
+*.db
+
+# -------------------------
+# Ultralytics / YOLO 흔한 생성물
+# -------------------------
+**/yolo*/ru***
