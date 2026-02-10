@@ -1,0 +1,72 @@
+exp:
+  name: "fl_det_compare_mvp"
+  seed: 42
+  git_commit: "AUTO"
+  device: "cpu"
+  precision: "fp32"
+
+data:
+  dataset_id: "synthetic"   # lisa / bdd100k / synthetic
+  root: "datasets"         # optional; ignored for synthetic
+  split_files:
+    train: "splits/train.txt"
+    val: "splits/val.txt"
+    test: "splits/test.txt"
+  client_partitions_dir: "splits/clients_alpha0.3_seed42/"
+  num_clients: 10
+  num_workers: 0
+  labels_root: "labels"    # for real datasets (YOLO txt labels)
+
+preprocess:
+  input_size: [320, 320]
+  normalize: {mean: [0.0, 0.0, 0.0], std: [1.0, 1.0, 1.0]}
+  letterbox: true
+
+augment:
+  enabled: false
+  mosaic: {p: 0.5}
+  mixup: {p: 0.2}
+  random_affine: {p: 0.5, degrees: 10, translate: 0.1, scale: 0.5}
+  color_jitter: {p: 0.2}
+
+fl:
+  algorithm: "fedavg"
+  rounds: 3
+  clients_per_round: 3
+  local_epochs: 1
+  batch_size: 8
+  optimizer: {name: "sgd", lr: 0.01, momentum: 0.9, wd: 0.0005}
+  scheduler: {name: "cosine", warmup_epochs: 0}
+  clip_norm: 0.0
+
+model:
+  type: "yolo"
+  variant: "toy"
+  pretrained: false
+  nc: 3
+
+attack:
+  enabled: true
+  attacker_clients: [1, 3]
+  poison_rate: 0.2
+  target_class: 2
+  method: "trigger_generation"  # dba / trigger_*
+
+trigger:
+  pattern: "checker"
+  size_px: 24
+  alpha: 1.0
+  position: "right_up_corner"
+  apply_prob: 1.0
+
+eval:
+  conf_thresh: 0.25
+  nms_iou: 0.6
+  max_det: 300
+  iou_match: 0.5
+  asr_defs:
+    generation: { fake_iou_upper: 0.1 }
+    disappearance: { require_clean_detect: false }
+    regional: { roi_type: "trigger_neighborhood", roi_expand_px: 50 }
+    global: { metric: "target_ratio" }
+

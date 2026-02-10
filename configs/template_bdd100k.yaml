@@ -1,0 +1,72 @@
+exp:
+  name: "fl_det_compare_bdd100k"
+  seed: 42
+  git_commit: "AUTO"
+  device: "cuda"
+  precision: "fp16"
+
+data:
+  dataset_id: "bdd100k"
+  root: "datasets"
+  split_files:
+    train: "splits/train.txt"
+    val: "splits/val.txt"
+    test: "splits/test.txt"
+  client_partitions_dir: "splits/clients_alpha0.3_seed42/"
+  num_clients: 50
+  num_workers: 4
+  labels_root: "labels"
+
+preprocess:
+  input_size: [640, 640]
+  normalize: {mean: [0.0, 0.0, 0.0], std: [1.0, 1.0, 1.0]}
+  letterbox: true
+
+augment:
+  enabled: true
+  mosaic: {p: 0.5}
+  mixup: {p: 0.2}
+  random_affine: {p: 0.5, degrees: 10, translate: 0.1, scale: 0.5}
+  color_jitter: {p: 0.2}
+
+fl:
+  algorithm: "fedavg"
+  rounds: 100
+  clients_per_round: 10
+  local_epochs: 1
+  batch_size: 16
+  optimizer: {name: "sgd", lr: 0.01, momentum: 0.9, wd: 0.0005}
+  scheduler: {name: "cosine", warmup_epochs: 0}
+  clip_norm: 0.0
+
+model:
+  type: "rcnn"
+  variant: "faster_rcnn"  # TODO: implement adapter in src/models/
+  pretrained: true
+  nc: 5
+
+attack:
+  enabled: true
+  attacker_clients: [3, 17, 22]
+  poison_rate: 0.2
+  target_class: 2
+  method: "dba"
+
+trigger:
+  pattern: "checker"
+  size_px: 40
+  alpha: 1.0
+  position: "right_up_corner"
+  apply_prob: 1.0
+
+eval:
+  conf_thresh: 0.25
+  nms_iou: 0.6
+  max_det: 300
+  iou_match: 0.5
+  asr_defs:
+    generation: { fake_iou_upper: 0.1 }
+    disappearance: { require_clean_detect: true }
+    regional: { roi_type: "trigger_neighborhood", roi_expand_px: 50 }
+    global: { metric: "target_ratio" }
+

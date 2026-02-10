@@ -1,0 +1,8 @@
+numpy>=1.23
+PyYAML>=6.0
+pillow>=10.0
+torch>=2.1
+# torchvision is optional for some augmentations/adapters
+torchvision>=0.16; platform_system != "Darwin" or platform_machine != "arm64"
+flwr>=1.7
+
