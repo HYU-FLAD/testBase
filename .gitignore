@@ -69,6 +69,9 @@ weights/
 # Datasets (Raw)
 # -------------------------
 data/
+# 데이터 여기에 보관(lisa_base로 lisa 데이터셋 넣으면 됨)
+datas/                      
+
 datasets/
 dataset/
 raw_data/
